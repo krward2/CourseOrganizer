@@ -49,6 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + ")";
 
     //SQLite query string for creating the course table
+    //restructured the course table
     private static final String CREATE_COURSE_TABLE = "CREATE TABLE " + COURSE_TABLE + "("
             + KEY_ID + " INTEGER PRIMARY KEY, "
             + KEY_COURSE+ " TEXT, "

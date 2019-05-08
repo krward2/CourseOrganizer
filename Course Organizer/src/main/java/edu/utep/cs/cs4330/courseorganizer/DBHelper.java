@@ -115,6 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * Allows the database to change columns pertaining to a specific course.
      * @param changedCourse The course to be changed
      */
+    //restructured the update courses
     public void updateCourse(Course changedCourse){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + COURSE_TABLE +

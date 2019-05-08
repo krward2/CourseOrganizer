@@ -88,7 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void addCourse(Course course){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-
+        //cleaned up the add changes
         values.put(KEY_COURSE, course.getCourseTitle());
         values.put(KEY_DAYS, course.getDays());
         values.put(KEY_TIME, course.getTime());

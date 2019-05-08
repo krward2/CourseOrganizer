@@ -320,7 +320,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update(TASK_TABLE, values, KEY_TASK + " = ?", new String[]{id});
         db.close();
     }
-
+    //deletes the whole database table
     public void deleteAll(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from "+ TASK_TABLE);

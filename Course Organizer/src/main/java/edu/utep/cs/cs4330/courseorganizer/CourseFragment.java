@@ -4,9 +4,14 @@ package edu.utep.cs.cs4330.courseorganizer;
  * @since 5/8/2019
  */
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -112,6 +118,16 @@ public class CourseFragment extends Fragment {
         //Allows the first two CardViews to have context menus
         registerForContextMenu(view.findViewById(R.id.card_view));
         registerForContextMenu(view.findViewById(R.id.card_view2));
+
+        view.findViewById(R.id.buttonCall).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + textProfessorPhone.getText().toString()));
+                startActivity(intent);
+            }
+        });
+
 
         return view;
     }
@@ -399,7 +415,7 @@ public class CourseFragment extends Fragment {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        course.setProfessorPhone(textProfessorPhone.getText().toString());
+                        course.setProfessorPhone(editText.getText().toString());
                         updateTextViews();
                     }
                 });

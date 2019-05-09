@@ -128,6 +128,16 @@ public class CourseFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.buttonEmail).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"emailaddress@emailaddress.com"});
+
+                startActivity(Intent.createChooser(intent, "Send Email"));
+            }
+        });
 
         return view;
     }
@@ -504,7 +514,7 @@ public class CourseFragment extends Fragment {
                         //Creates new task object
                         Task t = new Task(((TextView)view.findViewById(R.id.addTask)).getText().toString(),
                                 course.getCourseTitle(),
-                                ((TextView)view.findViewById(R.id.addTask)).getText().toString());
+                                ((TextView)view.findViewById(R.id.addDueDate)).getText().toString());
 
                         //Updates listView
                         taskList.add(t);

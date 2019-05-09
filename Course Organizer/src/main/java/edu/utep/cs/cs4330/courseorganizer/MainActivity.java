@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 "UGLC 016", "Dr. Love", "(333)333-3333",
                 "lov@uni.edu", "CCSB 1.04", "1:00PM - 2:00PM"));
 
-        dbHelper.addTasks("Read Gravity's Rainbow", insertedCourseList.get(2).getCourseTitle(), "3/3/3");
+        dbHelper.addTasks("Read Gravitys Rainbow", insertedCourseList.get(2).getCourseTitle(), "3/3/3");
 
         insertedCourseList.add(new Course("MATH 3141", "T", "11:00AM - 12:00PM",
                 "BSN 240", "Dr. Oc", "(444)444-4444",
@@ -353,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPositiveButton("Next", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        newCourse.setProfessorOfficeLocation(((EditText)view.findViewById(R.id.addInstructorOffice)).getText().toString());
                         addCourseDialog4(newCourse);
                     }
                 });
@@ -434,6 +435,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        newCourse.setLocation(((EditText)view.findViewById(R.id.addCourseLocation)).getText().toString());
+
                         extractedCourseList.add(newCourse);
                         updateNavigationMenu(extractedCourseList);
                         dbHelper.addCourse(newCourse);

@@ -82,11 +82,26 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.AppCompatImageButton
-                android:id="@+id/buttonCall"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_phone"/>
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/buttonCall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_phone"/>
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/buttonEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_email"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

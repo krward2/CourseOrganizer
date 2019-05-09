@@ -49,6 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + ")";
 
     //SQLite query string for creating the course table
+    //restructured the course table
     private static final String CREATE_COURSE_TABLE = "CREATE TABLE " + COURSE_TABLE + "("
             + KEY_ID + " INTEGER PRIMARY KEY, "
             + KEY_COURSE+ " TEXT, "
@@ -88,7 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void addCourse(Course course){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-
+        //cleaned up the add changes
         values.put(KEY_COURSE, course.getCourseTitle());
         values.put(KEY_DAYS, course.getDays());
         values.put(KEY_TIME, course.getTime());
@@ -114,6 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * Allows the database to change columns pertaining to a specific course.
      * @param changedCourse The course to be changed
      */
+    //restructured the update courses
     public void updateCourse(Course changedCourse){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + COURSE_TABLE +
@@ -318,7 +320,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update(TASK_TABLE, values, KEY_TASK + " = ?", new String[]{id});
         db.close();
     }
-
+    //deletes the whole database table
     public void deleteAll(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from "+ TASK_TABLE);

@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="15dp"
-    android:layout_centerInParent="true">
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginLeft="15dp"
-        android:src="@drawable/ic_professor"/>
-
+        android:src="@drawable/ic_school2"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,18 +15,26 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/addInstructorOffice"
+            android:id="@+id/addCourseLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Enter office location"/>
+            android:hint="Enter course location"/>
 
         <EditText
-            android:id="@+id/addInstructorOfficeHours"
+            android:id="@+id/addCourseDays"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="none"
             android:focusable="true"
-            android:hint="Enter office hours"/>
+            android:hint="Enter course days"/>
+
+        <EditText
+            android:id="@+id/addCourseTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="true"
+            android:hint="Enter course time"/>
 
     </LinearLayout>
 

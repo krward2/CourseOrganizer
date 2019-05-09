@@ -1,34 +1,34 @@
 package edu.utep.cs.cs4330.courseorganizer;
 
-import android.content.Context;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
+import java.util.Calendar;
+import java.util.List;
+
+import ca.antonious.materialdaypicker.MaterialDayPicker;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -217,7 +218,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     }
                 })
-
                 .setPositiveButton("Add Course", new DialogInterface.OnClickListener() {
                     /**
                      * Determines behavior of apply button on click, passes the string used to pass
@@ -292,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void addCourseDialog2(Course newCourse){
+        Log.i("Course NAme", String.valueOf(newCourse.getCourseTitle()));
         //Attaches the calling activity to the dialog
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
         //Retrieve and prepare the UI for the dialog box
@@ -313,33 +314,205 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         newCourse.setProfessorName(((EditText)view.findViewById(R.id.addInstructorName)).getText().toString());
                         newCourse.setProfessorPhone(((EditText)view.findViewById(R.id.addInstructorPhone)).getText().toString());
                         newCourse.setProfessorEmail(((EditText)view.findViewById(R.id.addInstructorEmail)).getText().toString());
+
+                        addCourseDialog3(newCourse);
                     }
                 });
         android.app.AlertDialog dialog = builder.create();
         dialog.show();
     }
 
-    public void addCourseDialog3(){
+    public void addCourseDialog3(Course newCourse){
         //Attaches the calling activity to the dialog
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
         //Retrieve and prepare the UI for the dialog box
-        View view = getLayoutInflater().inflate(R.layout.delete_dialog, null);
+        View view = getLayoutInflater().inflate(R.layout.add_course_3, null);
+        EditText addInstructorOfficeHours = view.findViewById(R.id.addInstructorOfficeHours);
+        addInstructorOfficeHours.setInputType(InputType.TYPE_NULL);
 
+        addInstructorOfficeHours.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("EditText Listener", "Click heard");
+                addTimeDialog1((EditText)v, newCourse, true);
+                addInstructorOfficeHours.setText(newCourse.getProfessorOfficeHours());
+            }
+        });
         //Set textViews
 
         //Assigns the UI to the dialog box and sets the title and behavior of positive
         //and negative buttons
         builder.setView(view)
-                .setTitle("Delete Course")
+                .setTitle("Instructor Information cont.")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 })
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Next", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        addCourseDialog4(newCourse);
+                    }
+                });
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void addTimeDialog1(EditText editText, Course newCourse, boolean isStart) {
+        //Creates calender object to communicate with TimePickerDialog
+        final Calendar myCalender = Calendar.getInstance();
+        int hour = myCalender.get(Calendar.HOUR_OF_DAY);
+        int minute = myCalender.get(Calendar.MINUTE);
+
+        //Sets the listener that is called when the time is set
+        TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener(){
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                Log.i("Time Picker input", String.valueOf(hourOfDay));
+                myCalender.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                myCalender.set(Calendar.MINUTE, minute);
+                final String time = String.valueOf(myCalender.get(Calendar.HOUR_OF_DAY)) +
+                        ":" + String.valueOf(myCalender.get(Calendar.MINUTE));
+                Log.i("TimerPicker output", time);
+                if(isStart){
+                    newCourse.setProfessorOfficeHours(time);
+                    addTimeDialog1(editText, newCourse, false);
+                }
+                else{
+                    newCourse.setProfessorOfficeHours(newCourse.getProfessorOfficeHours() + " - " + time);
+                    editText.setText(newCourse.getProfessorOfficeHours());
+                }
+            }
+        };
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, android.R.style.Theme_Material_Dialog_NoActionBar, myTimeListener, hour, minute, true);
+        if(isStart){timePickerDialog.setTitle("Choose start time:");}
+        else {timePickerDialog.setTitle("Choose end time:");}
+        timePickerDialog.getWindow();
+        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        timePickerDialog.show();
+    }
+
+    public void addCourseDialog4(Course newCourse){
+        //Attaches the calling activity to the dialog
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
+        //Retrieve and prepare the UI for the dialog box
+        View view = getLayoutInflater().inflate(R.layout.add_course_4, null);
+        EditText addCourseDays = view.findViewById(R.id.addCourseDays);
+        EditText addCourseTime = view.findViewById(R.id.addCourseTime);
+
+        addCourseDays.setInputType(InputType.TYPE_NULL);
+        addCourseTime.setInputType(InputType.TYPE_NULL);
+
+        addCourseDays.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addDayDialog((EditText)v, newCourse);
+            }
+        });
+
+        addCourseTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addTimeDialog2((EditText) v, newCourse, true);
+            }
+        });
+        //Set textViews
+
+        //Assigns the UI to the dialog box and sets the title and behavior of positive
+        //and negative buttons
+        builder.setView(view)
+                .setTitle("Course Information")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        extractedCourseList.add(newCourse);
+                        updateNavigationMenu(extractedCourseList);
+                        dbHelper.addCourse(newCourse);
+
+                        Fragment fragment = new CourseFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("courseTitle", newCourse.getCourseTitle());
+                        bundle.putInt("position", extractedCourseList.size()-1);
+                        fragment.setArguments(bundle);
+
+                        getSupportActionBar().setTitle("Course Organizer " + newCourse.getCourseTitle());
+
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                fragment).commit();
+
+                        drawer.closeDrawer(GravityCompat.START);
+                    }
+                });
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void addTimeDialog2(EditText editText, Course newCourse, boolean isStart) {
+        //Creates calender object to communicate with TimePickerDialog
+        final Calendar myCalender = Calendar.getInstance();
+        int hour = myCalender.get(Calendar.HOUR_OF_DAY);
+        int minute = myCalender.get(Calendar.MINUTE);
+
+        //Sets the listener that is called when the time is set
+        TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener(){
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                Log.i("Time Picker input", String.valueOf(hourOfDay));
+                myCalender.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                myCalender.set(Calendar.MINUTE, minute);
+                final String time = String.valueOf(myCalender.get(Calendar.HOUR_OF_DAY)) +
+                        ":" + String.valueOf(myCalender.get(Calendar.MINUTE));
+                Log.i("TimerPicker output", time);
+                if(isStart){
+                    newCourse.setTime(time);
+                    addTimeDialog2(editText, newCourse, false);
+                }
+                else{
+                    newCourse.setTime(newCourse.getTime() + " - " + time);
+                    editText.setText(newCourse.getTime());
+                }
+            }
+        };
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, android.R.style.Theme_Material_Dialog_NoActionBar, myTimeListener, hour, minute, true);
+        if(isStart){timePickerDialog.setTitle("Choose start time:");}
+        else {timePickerDialog.setTitle("Choose end time:");}
+        timePickerDialog.getWindow();
+        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        timePickerDialog.show();
+    }
+
+    public void addDayDialog(EditText editText, Course newCourse){
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
+        View view = getLayoutInflater().inflate(R.layout.edit_days_dialog, null);
+        //Retrieves MaterialDay picker from XML
+        MaterialDayPicker dayPicker = view.findViewById(R.id.day_picker);
+
+        builder.setView(view)
+                .setTitle("Select Course Days")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("Select", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Recieves selected days
+                        List<MaterialDayPicker.Weekday> daysSelected = dayPicker.getSelectedDays();
+                        String days = formatWeekDays(daysSelected);
+                        editText.setText(days);
+                        newCourse.setDays(days);
 
                     }
                 });
@@ -347,32 +520,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dialog.show();
     }
 
-    public void addCourseDialog4(){
-        //Attaches the calling activity to the dialog
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
-        //Retrieve and prepare the UI for the dialog box
-        View view = getLayoutInflater().inflate(R.layout.delete_dialog, null);
-
-        //Set textViews
-
-        //Assigns the UI to the dialog box and sets the title and behavior of positive
-        //and negative buttons
-        builder.setView(view)
-                .setTitle("Delete Course")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        android.app.AlertDialog dialog = builder.create();
-        dialog.show();
+    public String formatWeekDays(List<MaterialDayPicker.Weekday> weekdays){
+        String formatted = "";
+        for(MaterialDayPicker.Weekday w : weekdays){
+            if(w.toString().equals("THURSDAY")){formatted += "R";}
+            else{
+                formatted += w.toString().charAt(0);
+            }
+        }
+        return formatted;
     }
 
     public ArrayList<Task> getTaskList(){return taskList;}
